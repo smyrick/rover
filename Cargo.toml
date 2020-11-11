@@ -13,6 +13,7 @@ rover-client = { path = "./crates/rover-client" }
 sputnik = { path = "./crates/sputnik" }
 timber = { path = "./crates/timber" }
 robot-panic = { path = "./crates/robot-panic" }
+roverup = { path = "./installers/roverup" }
 
 # crates.io deps
 anyhow = "1.0.31"
@@ -31,5 +32,5 @@ serial_test = "0.5.0"
 predicates = "1.0.5"
 
 [workspace]
-members = [".", "crates/*"]
+members = [".", "crates/*", "installers/roverup"]
 

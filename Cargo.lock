@@ -1458,6 +1458,7 @@ dependencies = [
  "predicates",
  "robot-panic",
  "rover-client",
+ "roverup",
  "serde",
  "serde_json",
  "serial_test",
@@ -1479,6 +1480,16 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "roverup"
+version = "0.1.0"
+dependencies = [
+ "atty",
+ "thiserror",
+ "tracing",
+ "which",
 ]
 
 [[package]]
@@ -2255,6 +2266,16 @@ checksum = "4bf6ef87ad7ae8008e15a355ce696bed26012b7caa21605188cfd8214ab51e2d"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "which"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87c14ef7e1b8b8ecfc75d5eca37949410046e66f15d185c01d70824f1f8111ef"
+dependencies = [
+ "libc",
+ "thiserror",
 ]
 
 [[package]]

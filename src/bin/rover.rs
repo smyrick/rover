@@ -1,13 +1,19 @@
 use anyhow::Result;
 use robot_panic::setup_panic;
 use rover::*;
+use roverup::Installer;
 use sputnik::Session;
 use structopt::StructOpt;
 
+use std::env;
+use std::path::PathBuf;
 use std::thread;
 
 fn main() -> Result<()> {
     setup_panic!();
+
+    maybe_install()?;
+
     let app = cli::Rover::from_args();
     timber::init(app.log_level);
     tracing::trace!(command_structure = ?app);
@@ -45,5 +51,27 @@ fn main() -> Result<()> {
     }?;
 
     result.print();
+    Ok(())
+}
+
+fn maybe_install() -> Result<()> {
+    if let Ok(executable_location) = env::current_exe() {
+        if executable_location
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .expect("could not parse executable name")
+            .starts_with("roverup")
+        {
+            let force_install = env::args().any(|arg| arg == "-f" || arg == "--force");
+            let override_install_path =
+                env::var_os("APOLLO_HOME").map(|location| PathBuf::from(&location));
+            let _ = Installer {
+                force_install,
+                override_install_path,
+                executable_location,
+            }
+            .install()?;
+        }
+    }
     Ok(())
 }
