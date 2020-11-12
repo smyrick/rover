@@ -1,4 +1,5 @@
 mod fetch;
+mod introspect;
 mod push;
 
 use anyhow::Result;
@@ -20,6 +21,9 @@ pub enum Command {
 
     /// Push a schema from a file
     Push(push::Push),
+
+    /// Introspect a schema from a running service
+    Introspect(introspect::Introspect),
 }
 
 impl<'a> Schema {
@@ -27,6 +31,7 @@ impl<'a> Schema {
         match &self.command {
             Command::Fetch(command) => command.run(),
             Command::Push(command) => command.run(),
+            Command::Introspect(command) => command.run(),
         }
     }
 }

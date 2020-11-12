@@ -1,6 +1,7 @@
 use crate::blocking::Client;
 use crate::RoverClientError;
-use graphql_introspection_query::introspection_response;
+use graphql_client::*;
+use std::collections::HashMap;
 
 #[derive(GraphQLQuery)]
 // The paths are relative to the directory where your `Cargo.toml` is located.
@@ -20,17 +21,21 @@ pub struct IntrospectionQuery;
 /// schema from apollo studio and returns it in either sdl (default) or json format
 pub fn run(
     // variables: introspection_query::Variables,
+    headers: HashMap<String, String>,
     client: Client,
 ) -> Result<String, RoverClientError> {
-    let response_data = execute_query(client)?;
-    get_schema_from_response_data(response_data)
+    let response_data = execute_query(client, headers)?;
+    dbg!(response_data);
+    // get_schema_from_response_data(response_data)
     // if we want json, we can parse & serialize it here
+    Ok("wow".to_string())
 }
 
 fn execute_query(
-    client: Client
-) -> Result<introspection_response::IntrospectionResponse, RoverClientError> {
-    let res = client.post::<IntrospectionQuery>(None)?;
+    client: Client,
+    headers: HashMap<String, String>,
+) -> Result<introspection_query::ResponseData, RoverClientError> {
+    let res = client.post::<IntrospectionQuery>(introspection_query::Variables {}, &headers)?;
     if let Some(data) = res {
         Ok(data)
     } else {
@@ -40,24 +45,24 @@ fn execute_query(
     }
 }
 
-fn get_schema_from_response_data(
-    response_data: introspection_query::ResponseData,
-) -> Result<String, RoverClientError> {
-    let service_data = match response_data.service {
-        Some(data) => Ok(data),
-        None => Err(RoverClientError::HandleResponse {
-            msg: "No service found".to_string(),
-        }),
-    }?;
+// fn get_schema_from_response_data(
+//     response_data: introspection_query::ResponseData,
+// ) -> Result<String, RoverClientError> {
+//     let service_data = match response_data.service {
+//         Some(data) => Ok(data),
+//         None => Err(RoverClientError::HandleResponse {
+//             msg: "No service found".to_string(),
+//         }),
+//     }?;
 
-    if let Some(schema) = service_data.schema {
-        Ok(schema.document)
-    } else {
-        Err(RoverClientError::HandleResponse {
-            msg: "No schema found for this variant".to_string(),
-        })
-    }
-}
+//     if let Some(schema) = service_data.schema {
+//         Ok(schema.document)
+//     } else {
+//         Err(RoverClientError::HandleResponse {
+//             msg: "No schema found for this variant".to_string(),
+//         })
+//     }
+// }
 
 // #[cfg(test)]
 // mod tests {
