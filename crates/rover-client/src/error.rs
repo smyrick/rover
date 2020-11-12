@@ -4,7 +4,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum RoverClientError {
     /// The provided GraphQL was invalid.
-    #[error("encountered a GraphQL error, registry responded with: {msg}")]
+    #[error("encountered a GraphQL error, server responded with: {msg}")]
 
     /// The error message.
     GraphQL { msg: String },
