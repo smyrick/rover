@@ -1,0 +1,5 @@
+query FederatedIntrospectionQuery {
+  _service {
+    sdl
+  }
+}

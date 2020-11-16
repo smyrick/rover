@@ -1,4 +1,5 @@
 mod push;
+mod introspect;
 
 use anyhow::Result;
 use serde::Serialize;
@@ -16,12 +17,15 @@ pub struct Partial {
 pub enum Command {
     /// Push a schema from a file
     Push(push::Push),
+    /// Introspect a partial schema from a federated service
+    Introspect(introspect::Introspect),
 }
 
 impl Partial {
     pub fn run(&self) -> Result<RoverStdout> {
         match &self.command {
             Command::Push(command) => command.run(),
+            Command::Introspect(command) => command.run(),
         }
     }
 }
