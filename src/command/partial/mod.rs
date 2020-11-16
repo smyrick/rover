@@ -1,5 +1,5 @@
-mod push;
 mod introspect;
+mod push;
 
 use anyhow::Result;
 use serde::Serialize;

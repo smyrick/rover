@@ -19,10 +19,7 @@ pub struct FederatedIntrospectionQuery;
 
 /// The main function to be used from this module. This function
 /// TODO: DOCS
-pub fn run(
-    headers: HashMap<String, String>,
-    client: Client,
-) -> Result<String, RoverClientError> {
+pub fn run(headers: HashMap<String, String>, client: Client) -> Result<String, RoverClientError> {
     let response_data = execute_query(client, headers)?;
     let sdl = get_sdl_from_response_data(response_data)?;
     Ok(sdl)
@@ -32,7 +29,10 @@ fn execute_query(
     client: Client,
     headers: HashMap<String, String>,
 ) -> Result<federated_introspection_query::ResponseData, RoverClientError> {
-    let res = client.post::<FederatedIntrospectionQuery>(federated_introspection_query::Variables {}, &headers)?;
+    let res = client.post::<FederatedIntrospectionQuery>(
+        federated_introspection_query::Variables {},
+        &headers,
+    )?;
     if let Some(data) = res {
         // dbg!(&data);
         Ok(data)
