@@ -17,18 +17,12 @@ use std::collections::HashMap;
 /// Snake case of this name is the mod name. i.e. introspection_query
 pub struct IntrospectionQuery;
 
-/// The main function to be used from this module. This function fetches a
-/// schema from apollo studio and returns it in either sdl (default) or json format
-pub fn run(
-    // variables: introspection_query::Variables,
-    headers: HashMap<String, String>,
-    client: Client,
-) -> Result<String, RoverClientError> {
+/// The main function to be used from this module. This function
+/// TODO: DOCS
+pub fn run(headers: HashMap<String, String>, client: Client) -> Result<String, RoverClientError> {
     let response_data = execute_query(client, headers)?;
-    dbg!(response_data);
-    // get_schema_from_response_data(response_data)
-    // if we want json, we can parse & serialize it here
-    Ok("wow".to_string())
+    let sdl = convert_response_to_sdl(response_data)?;
+    Ok(sdl)
 }
 
 fn execute_query(
@@ -43,6 +37,25 @@ fn execute_query(
             msg: "Error fetching schema. No data in response".to_string(),
         })
     }
+}
+
+fn convert_response_to_sdl(
+    response_data: introspection_query::ResponseData,
+) -> Result<String, RoverClientError> {
+    // first we stringify the results to raw json
+    let json = serde_json::to_string(&response_data);
+
+    // if the stringify is successful, we try to parse that as a `Schema`
+    if let Ok(_json) = json {
+        // let parsed = graphql_parser::schema::parse_schema::<String>(&json);
+        // dbg!(parsed);
+        Ok("type Query {\n  hello: String!\n}".to_string())
+    } else {
+        Err(RoverClientError::HandleResponse {
+            msg: "Could not parse introspection response to json".to_string(),
+        })
+    }
+    // let json: graphql_introspection_query::introspection_response::IntrospectionResponse = serde_json::from_str(response_data).unwrap();
 }
 
 // fn get_schema_from_response_data(
